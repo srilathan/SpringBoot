@@ -49,6 +49,42 @@ public class TutorialController {
 		}
 	}
 
+	@GetMapping("/tutorialsQueryTitle")
+	public ResponseEntity<List<Tutorial>> getTutorialsByTitle(@RequestParam(required = false) String title) {
+		try {
+			List<Tutorial> tutorials = new ArrayList<Tutorial>();
+
+			tutorialRepository.findByTitle(title).forEach(tutorials::add);
+
+			if (tutorials.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+
+			return new ResponseEntity<>(tutorials, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping("/tutorialsQuery")
+	public ResponseEntity<List<Tutorial>> getAllTutorialsQuery() {
+		try {
+			List<Tutorial> tutorials = new ArrayList<Tutorial>();
+
+			tutorialRepository.findAllTutorialsWithPagination().forEach(tutorials::add);
+
+			if (tutorials.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+
+			return new ResponseEntity<>(tutorials, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+
 	@GetMapping("/tutorials/{id}")
 	public ResponseEntity<Tutorial> getTutorialById(@PathVariable("id") long id) {
 		Optional<Tutorial> tutorialData = tutorialRepository.findById(id);
